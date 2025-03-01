@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <title>addUser</title>
+</head>
+<body>
+    <h1>addUser</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}
+        </p>
+        <p>
+            {{ form.remember }} {{ form.remember.label }}
+        </p>
+        <p><input type="submit" value="addUser"></p>
+    </form>
+
+</body>
+</html>

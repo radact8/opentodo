@@ -1,0 +1,16 @@
+<h1>Hello, {{ current_user.username }}!</h1>
+{% block contents %}
+{% for i in range(7) %}
+        <tr>
+            <form method="post" name="{{ current_user.username }}{{i}}" action="/add_task{{i}}">
+                <td>
+                    <input name="{{current_user.username}}{{ i }}" type="text" size="10">
+                </td>
+                <td>
+                    <input type="submit" value="入力">
+                </td>
+            </form>
+        </tr>
+{% endfor %}
+<a href="{{ url_for('dashboard')}}">戻る</a>
+{% endblock %}

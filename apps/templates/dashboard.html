@@ -1,0 +1,30 @@
+<h1>Hello, {{ current_user.username }}!</h1>
+<table border="1">
+    <tr>
+        <td>
+            today
+        </td>
+    </tr>
+    {% for i in range(7) %}
+        <tr>
+            <form method="post" name="name{{i}}" action="">
+                <td>
+                    {{ tasks[i][1] }}
+                </td>
+                <td>
+                    <select name="name{{i}}" id="">
+                        <option value="">未入力</option>
+                        <option value="o">〇</option>
+                        <option value="x">×</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="submit" value="入力">
+                </td>
+                </form>
+        </tr>
+    {% endfor %}
+</table>
+<a href="{{ url_for('add_task') }}">addtask</a>
+<br>
+<a href="{{ url_for('logout') }}">Logout</a>
