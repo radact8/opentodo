@@ -2,6 +2,9 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user,current_user
 from flask_wtf import FlaskForm
 
+import datetime
+import time
+
 import main
 import forms
 import db
@@ -22,13 +25,13 @@ def login():
         users = []
         for i in range(users_num):
             users.append(models.User(id=db_user[i][0],username=db_user[i][1],password=db_user[i][2]))
-            print(users[i])
         user = next((u for u in users if u.username == form.username.data), None)
         if user and user.password == form.password.data:
             login_user(user, remember=form.remember.data)
             return redirect(url_for('dashboard'))
         flash('Invalid username or password')
 
+    
     return render_template("login.html",form=form)
 
 
@@ -49,7 +52,27 @@ def dashboard():
     name=current_user.username+"Task"
     db.create_tasks_table(name)
     tasks = db.get_users_task(name)
-    return render_template('dashboard.html',tasks=tasks)
+    db.create_task_results(current_user.username)
+    now_result_num = db.get_result_size(current_user.username)
+    if(now_result_num == 0):
+        db.task_insert_day_change(current_user.username)
+
+    views_result = []
+    todays_result = db.get_todays_result(current_user.username)
+    check_emptys = db.get_check_empty(current_user.username)
+    print(check_emptys)
+    for i in range(7):
+
+        if(check_emptys[i] == 0):
+            views_result.append("No")
+        else:
+            if(todays_result[i] == 0):
+                views_result.append("x")
+            else:
+                views_result.append("o")
+
+    print(views_result)
+    return render_template('dashboard.html',tasks=tasks,views_result=views_result)
 
 @main.app.route('/logout')
 @login_required
@@ -66,8 +89,9 @@ def add_task0():
     name = current_user.username
     namefortask = name+'0'
     task_name=request.form[namefortask]
+    print(task_name)
     tablename = name+"Task"
-    db.sql_add_task(tablename,0,task_name)
+    db.sql_add_task(name,tablename,0,task_name)
     return redirect(url_for('dashboard'))
 
 @main.app.route('/add_task1',methods=["GET","POST"])
@@ -76,7 +100,7 @@ def add_task1():
     namefortask = name+'1'
     task_name=request.form[namefortask]
     tablename = name+"Task"
-    db.sql_add_task(tablename,1,task_name)
+    db.sql_add_task(name,tablename,1,task_name)
     return redirect(url_for('dashboard'))
 
 @main.app.route('/add_task2',methods=["GET","POST"])
@@ -132,3 +156,52 @@ def add_task7():
     tablename = name+"Task"
     db.sql_add_task(tablename,7,task_name)
     return redirect(url_for('dashboard'))
+
+@main.app.route('/update0',methods=["GET","POST"])
+def update0():
+    name = current_user.username
+    db.update_doing(name,0)
+    return redirect(url_for('dashboard'))
+
+@main.app.route('/update1',methods=["GET","POST"])
+def update1():
+    name = current_user.username
+    db.update_doing(name,1)
+    return redirect(url_for('dashboard'))
+
+@main.app.route('/update2',methods=["GET","POST"])
+def update2():
+    name = current_user.username
+    db.update_doing(name,2)
+    return redirect(url_for('dashboard'))
+
+@main.app.route('/update3',methods=["GET","POST"])
+def update3():
+    name = current_user.username
+    db.update_doing(name,3)
+    return redirect(url_for('dashboard'))
+
+@main.app.route('/update4',methods=["GET","POST"])
+def update4():
+    name = current_user.username
+    db.update_doing(name,4)
+    return redirect(url_for('dashboard'))
+
+@main.app.route('/update5',methods=["GET","POST"])
+def update5():
+    name = current_user.username
+    db.update_doing(name,5)
+    return redirect(url_for('dashboard'))
+
+@main.app.route('/update6',methods=["GET","POST"])
+def update6():
+    name = current_user.username
+    db.update_doing(name,6)
+    return redirect(url_for('dashboard'))
+
+@main.app.route('/result_test')
+def result_test():
+    size = db.get_result_size(current_user.username)
+    times = db.get_result_days(current_user.username)
+    tasknames = db.get_result_taskname(current_user.username)
+    return render_template('resultTest.html',size=size,times=times,tasknames=tasknames)

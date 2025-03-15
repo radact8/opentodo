@@ -7,16 +7,12 @@
     </tr>
     {% for i in range(7) %}
         <tr>
-            <form method="post" name="name{{i}}" action="">
+            <form method="post" name="name{{i}}" action="/update{{i}}">
                 <td>
                     {{ tasks[i][1] }}
                 </td>
                 <td>
-                    <select name="name{{i}}" id="">
-                        <option value="">未入力</option>
-                        <option value="o">〇</option>
-                        <option value="x">×</option>
-                    </select>
+                    {{ views_result[i] }}
                 </td>
                 <td>
                     <input type="submit" value="入力">
@@ -28,3 +24,5 @@
 <a href="{{ url_for('add_task') }}">addtask</a>
 <br>
 <a href="{{ url_for('logout') }}">Logout</a>
+<br>
+<a href="{{url_for('result_test')}}">checkResult</a>

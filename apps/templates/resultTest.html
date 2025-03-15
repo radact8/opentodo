@@ -1,0 +1,9 @@
+{% for time in times%}
+{{ time }}
+{% endfor %}
+<br>
+{% for taskname in tasknames %}
+{% if taskname == "" %}
+    null
+{% endif %}
+{% endfor %}
