@@ -9,6 +9,9 @@ import main
 import forms
 import db
 import models
+import os
+import time
+
 
 
 @main.app.route('/')
@@ -59,10 +62,11 @@ def dashboard():
 
     views_result = []
     todays_result = db.get_todays_result(current_user.username)
+    print("-----------")
+    print(todays_result)
     check_emptys = db.get_check_empty(current_user.username)
-    print(check_emptys)
+    
     for i in range(7):
-
         if(check_emptys[i] == 0):
             views_result.append("No")
         else:
@@ -70,9 +74,11 @@ def dashboard():
                 views_result.append("x")
             else:
                 views_result.append("o")
-
+    
+    date = datetime.date.today().strftime("%Y/%m/%d")
+    date = date
     print(views_result)
-    return render_template('dashboard.html',tasks=tasks,views_result=views_result)
+    return render_template('dashboard.html',tasks=tasks,views_result=views_result,date=date)
 
 @main.app.route('/logout')
 @login_required
@@ -109,7 +115,7 @@ def add_task2():
     namefortask = name+'2'
     task_name=request.form[namefortask]
     tablename = name+"Task"
-    db.sql_add_task(tablename,2,task_name)
+    db.sql_add_task(name,tablename,2,task_name)
     return redirect(url_for('dashboard'))
 
 @main.app.route('/add_task3',methods=["GET","POST"])
@@ -118,7 +124,7 @@ def add_task3():
     namefortask = name+'3'
     task_name=request.form[namefortask]
     tablename = name+"Task"
-    db.sql_add_task(tablename,3,task_name)
+    db.sql_add_task(name,tablename,3,task_name)
     return redirect(url_for('dashboard'))
 
 @main.app.route('/add_task4',methods=["GET","POST"])
@@ -127,7 +133,7 @@ def add_task4():
     namefortask = name+'4'
     task_name=request.form[namefortask]
     tablename = name+"Task"
-    db.sql_add_task(tablename,4,task_name)
+    db.sql_add_task(name,tablename,4,task_name)
     return redirect(url_for('dashboard'))
 
 @main.app.route('/add_task5',methods=["GET","POST"])
@@ -136,7 +142,7 @@ def add_task5():
     namefortask = name+'5'
     task_name=request.form[namefortask]
     tablename = name+"Task"
-    db.sql_add_task(tablename,5,task_name)
+    db.sql_add_task(name,tablename,5,task_name)
     return redirect(url_for('dashboard'))
 
 @main.app.route('/add_task6',methods=["GET","POST"])
@@ -145,7 +151,7 @@ def add_task6():
     namefortask = name+'6'
     task_name=request.form[namefortask]
     tablename = name+"Task"
-    db.sql_add_task(tablename,6,task_name)
+    db.sql_add_task(name,tablename,6,task_name)
     return redirect(url_for('dashboard'))
 
 @main.app.route('/add_task7',methods=["GET","POST"])
@@ -154,7 +160,7 @@ def add_task7():
     namefortask = name+'7'
     task_name=request.form[namefortask]
     tablename = name+"Task"
-    db.sql_add_task(tablename,7,task_name)
+    db.sql_add_task(name,tablename,7,task_name)
     return redirect(url_for('dashboard'))
 
 @main.app.route('/update0',methods=["GET","POST"])
@@ -202,6 +208,6 @@ def update6():
 @main.app.route('/result_test')
 def result_test():
     size = db.get_result_size(current_user.username)
-    times = db.get_result_days(current_user.username)
     tasknames = db.get_result_taskname(current_user.username)
-    return render_template('resultTest.html',size=size,times=times,tasknames=tasknames)
+    view_num = db.get_per(current_user.username)
+    return render_template('resultTest.html',size=size,tasknames=tasknames,view_num=view_num)

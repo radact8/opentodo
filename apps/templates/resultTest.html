@@ -1,9 +1,26 @@
-{% for time in times%}
-{{ time }}
-{% endfor %}
+<h1>Hello, {{ current_user.username }}!</h1>
+<table border="1">
+    <tr>
+        <td>
+            today
+        </td>
+    </tr>
+    {% for i in range(7) %}
+        <tr>
+            <td>
+                {{ tasknames[i] }}
+            </td>
+            <td>
+                {{ view_num[i] }}
+            </td>
+            
+        </tr>
+    {% endfor %}
+</table>
+<a href="{{ url_for('add_task') }}">addtask</a>
 <br>
-{% for taskname in tasknames %}
-{% if taskname == "" %}
-    null
-{% endif %}
-{% endfor %}
+<a href="{{ url_for('logout') }}">Logout</a>
+<br>
+<a href="{{ url_for('dashboard') }}">dashboard</a>
+<br>
+<a href="{{url_for('result_test')}}">checkResult</a>

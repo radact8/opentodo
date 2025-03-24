@@ -1,6 +1,9 @@
 import sqlite3
 import datetime
 import models
+import os
+import time
+
 
 DATABASE = "database.db"
 
@@ -210,15 +213,19 @@ def get_result_days(username):
     return results
     
 def get_result_taskname(username):
-    tableName = username + "sresults"
+    tableName = username + "Task"
+    check_empty = get_check_empty(username)
     con = sqlite3.connect(DATABASE)
     query  = f"""SELECT * FROM {tableName}"""
     db_results = con.execute(query).fetchall()
     con.close()
+    print(db_results)
     results = []
-    for result in db_results:
-        results.append(result[2])
-    
+    for i in range(7):
+        if check_empty[i] == 1:
+            results.append(db_results[i][1])
+        else:
+            results.append("No Data")
     return results
 
 def get_all_result(username):
@@ -245,10 +252,25 @@ def get_check_empty(username):
     
     return results
 
+def get_check_todays_empty(username):
+    tableName = username + "sresults"
+    date = datetime.date.today().strftime("%Y/%m/%d")
+    con = sqlite3.connect(DATABASE)
+    query  = f"""SELECT * FROM {tableName}  where day='{date}'"""
+    db_results = con.execute(query).fetchall()
+    con.close()
+    results = []
+    for result in db_results:
+        results.append(result[5])
+    
+    return results
+
+
 def get_todays_result(username):
     tableName = username + "sresults"
+    date = datetime.date.today().strftime("%Y/%m/%d")
     con = sqlite3.connect(DATABASE)
-    query  = f"""SELECT * FROM {tableName}"""
+    query  = f"""SELECT * FROM {tableName} where day='{date}'"""
     db_results = con.execute(query).fetchall()
     con.close()
     print(db_results)
@@ -256,5 +278,30 @@ def get_todays_result(username):
     for result in db_results:
         results.append(result[3])
     
-    
     return results
+
+
+def get_per(username):
+    tableName = username + "sresults"
+    con = sqlite3.connect(DATABASE)
+    query  = f"""SELECT * FROM {tableName}"""
+    db_results = con.execute(query).fetchall()
+    con.close()
+    results = [0,0,0,0,0,0,0]
+    #taskid0~7で分別
+    size=len(db_results)
+    for i in range(size):
+        if(db_results[i][3] == 1):
+           for j in range(7):
+               if(db_results[i][1] == j):
+                   results[j] = results[j]+1
+
+    todays_empty = get_check_todays_empty(username)
+    div_num = size/7
+    view_num = ["","","","","","",""]
+    for i in range(7):
+        if(todays_empty[i] == 1):
+            view_num[i] = str(int((results[i]/div_num)*100))+"%"
+        else:
+            view_num[i] = "No Data"
+    return view_num
